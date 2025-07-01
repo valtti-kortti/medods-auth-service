@@ -7,6 +7,16 @@ import (
 	"log"
 )
 
+// GetUserGUID godoc
+// @Summary Получить GUID пользователя
+// @Description Возвращает GUID пользователя из валидной сессии (требуется access token в cookies)
+// @Tags User
+// @Produce json
+// @Success 200 {object} map[string]string "Пример: {"user_guid": "550e8400-e29b-41d4-a716-446655440000"}"
+// @Failure 401 "Невалидный/отсутствующий access token"
+// @Failure 404 "Сессия не найдена"
+// @Router /user/guid [get]
+// @Security ApiKeyAuth
 func (s *service) GetUserGUID(ctx *fiber.Ctx) error {
 	accessToken := ctx.Cookies("access_token")
 	claims, err := s.access.ValidToken(accessToken)
@@ -26,6 +36,17 @@ func (s *service) GetUserGUID(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"user_guid": session.UserGUID})
 }
 
+// LogoutUser godoc
+// @Summary Выход пользователя из системы
+// @Description Удаляет сессию пользователя по access token (требуется валидный access token в cookies)
+// @Tags User
+// @Produce json
+// @Success 200 "Сессия успешно удалена"
+// @Failure 401 {object} map[string]string "Невалидный/отсутствующий access token"
+// @Failure 404 {object} map[string]string "Сессия не найдена"
+// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Router /user/logout [get]
+// @Security ApiKeyAuth
 func (s *service) LogoutUser(ctx *fiber.Ctx) error {
 	accessToken := ctx.Cookies("access_token")
 	claims, err := s.access.ValidToken(accessToken)

@@ -9,6 +9,17 @@ import (
 	"github.com/google/uuid"
 )
 
+// CreateTokens godoc
+// @Summary Создать пару токенов (access + refresh)
+// @Description Генерирует новую пару JWT-токенов для пользователя и сохраняет сессию
+// @Tags Token
+// @Produce json
+// @Param user_guid path string true "GUID пользователя в формате UUID" format(uuid)
+// @Success 200 "Токены успешно созданы и установлены в cookies"
+// @Success 200 {object} map[string]interface{} "Пример: {'message': 'tokens created'}"
+// @Failure 400 {object} map[string]string "Пример: {'error': 'Invalid user GUID'}"
+// @Failure 500 {object} map[string]string "Пример: {'error': 'Internal server error'}"
+// @Router /tokens/{user_guid} [get]
 func (s *service) CreateTokens(ctx *fiber.Ctx) error {
 	// получаем guid из параметра запроса
 	guidString := ctx.Params("user_guid")
