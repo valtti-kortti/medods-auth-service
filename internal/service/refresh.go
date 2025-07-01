@@ -9,6 +9,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// RefreshToken godoc
+// @Summary Обновить пару токенов
+// @Description Обновляет пары access и refresh токены, токены берутся из кук
+// @Tags Token
+// @Produce json
+// @Success 200 "Токены успешно обновлены и установлены в cookies"
+// @Failure 401 {object} map[string]string "Пример: {'error': 'Unauthorized'}"
+// @Failure 404 {object} map[string]string "Пример: {'error': 'Session not found'}"
+// @Failure 500 {object} map[string]string "Пример: {'error': 'Internal server error'}"
+// @Router /refresh [get]
 func (s *service) RefreshToken(ctx *fiber.Ctx) error {
 	// получае токены из кук
 	accessToken := ctx.Cookies("access_token")

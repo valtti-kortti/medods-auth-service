@@ -1,9 +1,11 @@
 package api
 
 import (
+	_ "auth-service/docs"
 	"auth-service/internal/api/middleware"
 	"auth-service/internal/service"
 	"auth-service/internal/token"
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -23,13 +25,13 @@ func NewRouters(r *Routers, tokenService token.JWTTokenManager) *fiber.App {
 		MaxAge:        300,
 	}))
 
-	appGroupToken := app.Group("/")
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
+	appGroupToken := app.Group("/")
 	appGroupToken.Get("/tokens/:user_guid", r.Service.CreateTokens)
 	appGroupToken.Get("/refresh", r.Service.RefreshToken)
 
 	appGroupUser := app.Group("/user", middleware.Authorization(tokenService))
-
 	appGroupUser.Get("/guid", r.Service.GetUserGUID)
 	appGroupUser.Get("/logout", r.Service.LogoutUser)
 

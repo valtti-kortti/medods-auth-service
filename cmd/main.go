@@ -1,3 +1,11 @@
+// @title Auth Service API
+// @version 1.0
+// @description API для аутентификации и управления сессиями
+// @host localhost:8080
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in cookie
+// @name access_token
 package main
 
 import (
