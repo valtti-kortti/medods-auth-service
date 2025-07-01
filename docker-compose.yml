@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: my_app
+    build: .
+    environment:
+      DB_HOST: db  # Изменил localhost на имя сервиса db
+      DB_PORT: 5432
+      DB_NAME: mydb
+      DB_USER: admin
+      DB_PASSWORD: admin
+      SSL_MODE: disable
+      DB_POOL_MAX_CONNS: 10
+      DB_POOL_MAX_CONN_LIFETIME: 300s
+      DB_POOL_MAX_CONN_IDLE_TIME: 150s
+    ports:
+      - "8080:8080"  # Убедитесь, что ваше приложение слушает этот порт
+    depends_on:
+      - db
+    restart: unless-stopped  # Добавил политику перезапуска
+
+  db:
+    container_name: db
+    image: postgres:15-alpine  # Лучше использовать конкретную версию
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:  # Добавил healthcheck для надежности
+      test: ["CMD-SHELL", "pg_isready -U admin -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:
